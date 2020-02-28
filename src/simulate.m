@@ -34,6 +34,8 @@ function result = simulate(controllers, desired_state, init_state, tstart, tend,
     xdot = init_state.xdot;
     theta = init_state.theta;
     thetadot = init_state.thetadot;
+    
+    state = struct('x', x, 'xdot', xdot, 'theta', theta, 'thetadot', thetadot);
 
     % If we are running without a controller, do not disturb the system.
     if nargin == 0
@@ -48,7 +50,7 @@ function result = simulate(controllers, desired_state, init_state, tstart, tend,
         if nargin == 0
             i = input(:, ind);
         else
-            [i, controller_params] = resolve_control_signals(controllers, controller_params, desired_state, theta, thetadot, x(3), xdot(3));
+            [i, controller_params] = resolve_control_signals(controllers, controller_params, desired_state, state);
         end
 
         % Compute forces, torques, and accelerations.
@@ -62,6 +64,8 @@ function result = simulate(controllers, desired_state, init_state, tstart, tend,
         theta = theta + dt * thetadot;
         xdot = xdot + dt * a;
         x = x + dt * xdot;
+        
+        state = struct('x', x, 'xdot', xdot, 'theta', theta, 'thetadot', thetadot);
 
         % Store simulation state for output.
         xout(:, ind) = x;
