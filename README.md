@@ -48,6 +48,9 @@ An example to hover the drone at an height (10m) starting in a disoriented manne
 ```
 run(tests/hover_stabilize.m)
 ```
+Output of the above simulation:
+![Drone hovering demo](https://github.com/layman-n-ish/Drone-Simulation/blob/master/demos/hover_stabilise.gif)
+![Drone hovering plots](https://github.com/layman-n-ish/Drone-Simulation/blob/master/imgs/hover_stabilize.jpg)
 
 #### To Do:
 - Show demos and walk through the inferences of the various tests simulated
