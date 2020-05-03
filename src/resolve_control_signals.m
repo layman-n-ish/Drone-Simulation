@@ -1,3 +1,4 @@
+% computes the control signals (of the 4 motors) to reach the desired goals
 function [control_signals, state] = resolve_control_signals(controllers, state, desired_state, theta, thetadot, z, zdot)
     thrust = compute_thrust(controllers.thrust_controller, state, desired_state, theta, z, zdot);
     torques = compute_torques(controllers, state, desired_state, theta, thetadot);

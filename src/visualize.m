@@ -4,7 +4,6 @@ function h = visualize_test(data)
     % and the other two are for running graphs of angular velocity and displacement.
     figure; plots = [subplot(3, 2, 1:4), subplot(3, 2, 5), subplot(3, 2, 6)];
     subplot(plots(1));
-    pause;
 
     % Create the quadcopter object. Returns a handle to
     % the quadcopter itself as well as the thrust-display cylinders.

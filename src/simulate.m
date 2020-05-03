@@ -1,5 +1,5 @@
 function result = simulate(controllers, desired_state, init_state, tstart, tend, dt)
-    % Physical constants.
+    % Physical constants
     g = 9.81;
     m = 0.468;
     L = 0.225;
@@ -7,12 +7,6 @@ function result = simulate(controllers, desired_state, init_state, tstart, tend,
     b = 1.14e-7; % drag constant
     I = diag([4.856e-3, 4.856e-3, 8.801e-3]);
     kd = 0.25;
-
-    if nargin == 0
-        tstart = 0;
-        tend = 4;
-        dt = 0.001;
-    end
     
     ts = tstart:dt:tend-dt;
 
@@ -26,7 +20,7 @@ function result = simulate(controllers, desired_state, init_state, tstart, tend,
     thetadotout = zeros(3, N);
     inputout = zeros(4, N);
 
-    % Struct given to the controller. Controller may store its persistent state in it.
+    % Struct given to the controller to run simulations
     controller_params = struct('dt', dt, 'I', I, 'k', k, 'L', L, 'b', b, 'm', m, 'g', g);
 
     % Initial system state.
@@ -35,35 +29,25 @@ function result = simulate(controllers, desired_state, init_state, tstart, tend,
     theta = init_state.theta;
     thetadot = init_state.thetadot;
 
-    % If we are running without a controller, do not disturb the system.
-    if nargin == 0
-        input = manual_input(dt, 1);
-    end
-
     ind = 0;
     for t = ts
-        ind = ind + 1;
+        ind = ind + 1;     
+        
+        [i, controller_params] = resolve_control_signals(controllers, controller_params, desired_state, theta, thetadot, x(3), xdot(3));
 
-        % Get input from built-in input or controller.
-        if nargin == 0
-            i = input(:, ind);
-        else
-            [i, controller_params] = resolve_control_signals(controllers, controller_params, desired_state, theta, thetadot, x(3), xdot(3));
-        end
-
-        % Compute forces, torques, and accelerations.
+        % Compute forces, torques, and accelerations
         omega = thetadot2omega(thetadot, theta);
         a = acceleration(i, theta, xdot, m, g, k, kd);
         omegadot = angular_acceleration(i, omega, I, L, b, k);
 
-        % Progress the system state.
+        % Progress the system state
         omega = omega + dt * omegadot;
         thetadot = omega2thetadot(omega, theta); 
         theta = theta + dt * thetadot;
         xdot = xdot + dt * a;
         x = x + dt * xdot;
 
-        % Store simulation state for output.
+        % Store simulation state for output
         xout(:, ind) = x;
         xdotout(:, ind) = xdot;
         thetaout(:, ind) = theta;
@@ -71,12 +55,12 @@ function result = simulate(controllers, desired_state, init_state, tstart, tend,
         inputout(:, ind) = i;
     end
 
-    % Put all simulation variables into an output struct.
+    % Put all simulation variables into an output struct
     result = struct('x', xout, 'theta', thetaout, 'vel', xdotout, ...
                     'angvel', thetadotout, 't', ts, 'dt', dt, 'input', inputout);
 end
 
-% ===================================================================================================== %
+% ===========================DYNAMICS==================================== %
 
 % Compute Thrust given current inputs (thrust force on each motor) and thrust coefficient
 function T = thrust(inputs, k)
