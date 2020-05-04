@@ -38,8 +38,8 @@ simulate(controllers, desired_state, init_state, tstart, tend, dt);
 
 To visualize or plot graphs of the simulated run of the quadcopter, execute:
 ```
-visualize(simulate(controllers, desired_state, init_state, tstart, tend, dt);
-plot_data(simulate(controllers, desired_state, init_state, tstart, tend, dt);
+visualize(simulate(controllers, desired_state, init_state, tstart, tend, dt));
+plot_data(simulate(controllers, desired_state, init_state, tstart, tend, dt));
 ```
 
 ---
